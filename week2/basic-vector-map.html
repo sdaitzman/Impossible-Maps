@@ -3,44 +3,79 @@
 <html lang="en">
 
 <head>
-    <style>
-    body {
-        margin: 0;
-        padding: 0;
-    }
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
 
-    html,
-    #map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100%;
-    }
-    </style>
-    <title> Vector Map </title>
-    <script src='https://api.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.css' rel='stylesheet' />
+		html,
+		#map {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+		}
+	</style>
+	<title> Vector Map </title>
+	<script src='https://api.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.js'></script>
+	<link href='https://api.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.css' rel='stylesheet' />
 </head>
 
 <body>
-    <div id="map"> </div>
-    <script>
-    mapboxgl.accessToken = 'pk.eyJ1Ijoic2RhaXR6bWFuIiwiYSI6ImNqcmlvcHFhcDAxejU0M2xrbnlzaHE4dWEifQ.yYms6MVJSbe903BY_XALaw';
+	<div id="map"> </div>
+	<script>
+		mapboxgl.accessToken = 'pk.eyJ1Ijoic2RhaXR6bWFuIiwiYSI6ImNqcmlvcHFhcDAxejU0M2xrbnlzaHE4dWEifQ.yYms6MVJSbe903BY_XALaw';
+		let startZoom = 12;
+		var map = new mapboxgl.Map({
+			container: 'map', // you need this on every map
+			style: 'mapbox://styles/mapbox/light-v9', // you also need this
+			center: [-71.26, 42.293], // long then lat
+			zoom: startZoom,
+			pitch: 0,
+			bearing: 0
+		});
 
-    var map = new mapboxgl.Map({
-        container: 'map', // you need this on every map
-        style: 'mapbox://styles/mapbox/light-v9', // you also need this
-        center: [-74, 41], // long then lat
-        zoom: 15,
-        pitch: 50,
-        bearing: 29
-    });
+		map.on('load', function() {
+			map.addSource('walk', {
+				type: 'geojson',
+				data: './data/map.geojson'
+			});
+			map.addLayer({
+				id: 'walk',
+				type: 'line',
+				source: 'walk',
+
+			})
+		});
+
+		console.log("This code runs!");
+
+		let currentPitch = 0;
+		pitchInterval = setInterval(() => {
+			map.setPitch(currentPitch)
+			if (currentPitch >= 45) {
+				clearInterval(pitchInterval)
+			}
+			currentPitch += 0.5
+		}, 10)
+
+		let currentZoom = startZoom;
+		zoomInterval = setInterval(() => {
+			map.zoomTo(currentZoom, {
+				duration: 100,
+				easing: (t) => {
+					return t
+				}
+			})
+			if (currentZoom >= 16) {
+				clearInterval(zoomInterval)
+			}
+			currentZoom += 0.1
+		}, 100)
 
 
-
-    console.log("This code runs!");
-
-    </script>
+	</script>
 </body>
 
 </html>
