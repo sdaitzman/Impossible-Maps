@@ -43,11 +43,17 @@
     map.on('load', function() {
         map.addSource('states', {
             type: 'geojson',
-            data: // TODO: add data here
+            data: './data/states.geojson'
         });
         map.addLayer({
-
+            id: 'states',
+            type: 'fill',
+            source: 'states',
+            paint: {
+                'fill-color': 'pink',
+                'fill-opacity': .9
             }
+
         })
     });
     </script>
